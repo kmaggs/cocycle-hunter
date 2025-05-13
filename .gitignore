@@ -20,4 +20,5 @@ bin-release/
 # information for Eclipse / Flash Builder.
 Data/*
 examples/Synthetic/Transcriptomic-switch-model.ipynb
+*.egg-info/
 
