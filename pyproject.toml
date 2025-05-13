@@ -1,6 +1,6 @@
 [project]
 name = "chunter"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cohomological analysis of circular structures in scRNA-seq data"
 readme = "README.md"
 authors = [
