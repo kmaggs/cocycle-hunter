@@ -1,6 +1,6 @@
 [project]
 name = "chunter"
-version = "0.1.1"
+version = "0.1.2"
 description = "Cohomological analysis of circular structures in scRNA-seq data"
 readme = "README.md"
 authors = [
@@ -34,8 +34,4 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/chunter"]
 
-[[tool.uv.index]]
-name = "testpypi"
-url = "https://test.pypi.org/simple/"
-publish-url = "https://test.pypi.org/legacy/"
-explicit = true
+
