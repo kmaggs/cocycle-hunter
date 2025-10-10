@@ -12,15 +12,12 @@ from scipy.spatial import distance
 
 # for building the boundary matrices
 from scipy import sparse
-from scipy.sparse import coo_matrix,diags
+from scipy.sparse import diags
 
 from ripser import ripser
-from persim import plot_diagrams
 
 from tqdm import tqdm
 
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 
 
 
