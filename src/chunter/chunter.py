@@ -353,7 +353,7 @@ def harmonic_recenter(data, delta, mini, cocycle, edges, return_center = False):
     # subtract the harmonic center from the data
     data = data - harmonic_center
 
-    if return_center == True:
+    if return_center:
         return data, harmonic_center
     
     else:
@@ -498,7 +498,7 @@ def circular(adata, comp = [0,1], alpha = 0.2, recenter = False, mode = 'pca'):
     # add log counts to adata
     adata.obs["log_counts"] = np.log(adata.X.sum(axis=1)+1)
 
-    if recenter == True:
+    if recenter:
 
         # recenter circular coordinates around lowest expression cell
         low = adata.obs['log_counts'].idxmin()
@@ -561,7 +561,7 @@ def leadlag(adata, alignment = True):
     adata.var['gene_phase'] = np.angle(eigvecs[:,0]) % (2 * np.pi)
     adata.var['gene_amp'] = np.abs(eigvecs[:,0])
 
-    if alignment == True:
+    if alignment:
         print("Aligning Data")
         # align the data to the first gene
         adata = align(adata)
@@ -719,7 +719,7 @@ def fit_leadlag_plane(
 
 def phase_plot(adata, genes = None, scale = 1, topk = 10, color = None, size = None):
 
-    if genes != None:
+    if genes is not None:
         subset = adata.copy()[:,genes]
     else:
         subset = adata.copy()
@@ -759,7 +759,7 @@ def phase_plot(adata, genes = None, scale = 1, topk = 10, color = None, size = N
     # plot a black boundary around the circle
     plt.plot(np.cos(np.linspace(0,2*np.pi,100)), np.sin(np.linspace(0,2*np.pi,100)), 'k')
 
-    if color != None:
+    if color is not None:
         # check the type of elements in subset.var[color]
         if type(subset.var[color][0]) == str:
             print('O')
@@ -811,15 +811,13 @@ def phase_plot(adata, genes = None, scale = 1, topk = 10, color = None, size = N
 
     plt.legend(loc = 'upper right')
 
-    if color != None:
+    if color is not None:
         if type(subset.var[color][0]) != str:
             plt.colorbar(label = color)
 
     plt.show()
 
-import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
 import scipy.sparse as sp
 import anndata
 
@@ -1203,7 +1201,7 @@ def scatter3D(adata, color = None, comp = [0,1,2], title = False, color_continuo
 
 
     # set the title centering it at the top of the plot
-    if title != False:
+    if title:
         fig.update_layout(title=dict(
             text=title,
             xref="paper",
@@ -1321,7 +1319,7 @@ def PCA_persistence_info(adata, pca_combos, mode = 'pca'):
 # and outputs the df
 def circ_enrich(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2, min_genes = None):
     
-    if k != None:
+    if k is not None:
         comp = list(range(k))
     else:
         k = max(comp)+1
@@ -1459,7 +1457,7 @@ def filter_cells_by_density_iterative(adata, n_iter=3, n_pcs=3, bandwidth=0.5,
 def circ_enrich_ef(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2, min_genes= None, n_neighbors = 5):
     
 
-    if k != None:
+    if k is not None:
         comp = list(range(k))
     else:
         k = max(comp)+1
@@ -1524,7 +1522,7 @@ def circ_enrich_ef(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2
 # and outputs the df
 def circ_enrich_density(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2, bandwidth=0.3,lower_percentile=5, upper_percentile=100, min_genes= None):
     
-    if k != None:
+    if k is not None:
         comp = list(range(k))
     else:
         k = max(comp)+1
