@@ -1,24 +1,23 @@
 import random
+
+import anndata
+import matplotlib.cm as colormaps
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scanpy as sc
-# import seaborn as sns # not in use, can be removed
-import scipy.stats as ss
-import matplotlib.pyplot as plt
-import matplotlib.cm as colormaps
 import plotly.express as px
 import ringity as rng
-from scipy.sparse import csr_matrix, diags, identity, issparse
-from scipy.spatial.distance import cdist
-from scipy.sparse.linalg import eigsh
-
-from scipy.spatial import distance
-
-# for building the boundary matrices
-from scipy import sparse
-
+import scanpy as sc
+import scipy.sparse as sp
+import scipy.stats as ss
+import seaborn as sns
 from ripser import ripser
-
+from scipy import sparse
+from scipy.sparse import csr_matrix, diags, identity, issparse
+from scipy.sparse.linalg import eigsh
+from scipy.spatial import distance
+from scipy.spatial.distance import cdist
+from sklearn.neighbors import KernelDensity, NearestNeighbors
 from tqdm import tqdm
 
 
@@ -189,7 +188,6 @@ def align(adata):
     return adata
 
 
-from sklearn.neighbors import KernelDensity
 
 
 def extend_coordinates(adata_main, adata_sub, key='coords', comp=0, sigma=0.2):
@@ -603,7 +601,7 @@ def get_top_genes(adata, k = 10):
 
     return top_genes
 
-import anndata
+
 
 # fit a lead-lag plane to new data
 def fit_leadlag_plane(
@@ -817,9 +815,6 @@ def phase_plot(adata, genes = None, scale = 1, topk = 10, color = None, size = N
 
     plt.show()
 
-import seaborn as sns
-import scipy.sparse as sp
-import anndata
 
 def plot_heatmap(
     adata: anndata.AnnData,
@@ -1409,9 +1404,6 @@ def filter_cells_by_density_iterative(adata, n_iter=3, n_pcs=3, bandwidth=0.5,
         Filtered AnnData object containing only cells within the specified density range
         after the iterative filtering process.
     """
-    import numpy as np
-    from sklearn.neighbors import NearestNeighbors
-    import scanpy as sc
 
     # Compute PCA if not already done
     if 'X_pca' not in adata.obsm:
@@ -1597,6 +1589,7 @@ def calculate_pvalue_from_empirical_scores(test_score, empirical_scores):
     return ecdf.sf.evaluate(test_score)
 
 from statsmodels.distributions.empirical_distribution import ECDF
+
 
 def calculate_pvalue_from_empirical_scores2(test_score, empirical_scores):
     ecdf = ECDF(empirical_scores)
