@@ -5,14 +5,17 @@ import scanpy as sc
 # import seaborn as sns # not in use, can be removed
 import scipy.stats as ss
 import matplotlib.pyplot as plt
+import matplotlib.cm as colormaps
 import plotly.express as px
 import ringity as rng
+from scipy.sparse import csr_matrix, diags, identity, issparse
+from scipy.spatial.distance import cdist
+from scipy.sparse.linalg import eigsh
 
 from scipy.spatial import distance
 
 # for building the boundary matrices
 from scipy import sparse
-from scipy.sparse import diags
 
 from ripser import ripser
 
@@ -102,11 +105,9 @@ def weight_ft_0(k, t=None, alpha = 0.2):
 
 def phase_rotate(adata, theta):
 
-    # make sure theta between 0 and 1
     assert -1 <= theta <= 1, "Theta must be between -1 and 1"
 
-    # exp(2*pi*i*theta)
-    exp = np.exp(2*np.pi*1j*theta)
+    exp = np.exp(2*np.pi*1j*theta) # exp(2*pi*i*theta)
 
     adata.var['gene_phase'] =  ( adata.var['gene_phase'] + 2 * np.pi * theta ) % (2 * np.pi)
 
@@ -256,9 +257,6 @@ def extend_coordinates(adata_main, adata_sub, key='coords', comp=0, sigma=0.2):
     X_all = adata_main.obsm['X_LL']
     X_known = X_all[mask]
     
-    # Fit the Gaussian kernel density estimator on the known cells.
-    kde = KernelDensity(kernel='gaussian', bandwidth=sigma).fit(X_known)
-    
     # Compute pairwise squared Euclidean distances from every cell to each known cell.
     D2 = np.sum((X_all[:, np.newaxis, :] - X_known[np.newaxis, :, :])**2, axis=2)
     
@@ -363,10 +361,6 @@ def harmonic_recenter(data, delta, mini, cocycle, edges, return_center = False):
 
 
 ## effective resistence
-import numpy as np
-from scipy.sparse import csr_matrix, diags, identity, issparse
-from scipy.spatial.distance import cdist
-from scipy.sparse.linalg import eigsh
 
 def compute_knn_adjacency(X, num_neighbors=10):
     """
@@ -485,6 +479,8 @@ def circular(adata, comp = [0,1], alpha = 0.2, recenter = False, mode = 'pca'):
         data = adata.obsm['X_pca'][:,comp]
     elif mode == 'ef': # effective resistance
         data = adata.obsm['X_ef'][:,comp]
+    else:
+        raise ValueError("mode must be either 'pca' or 'ef'")
 
     # generate the weighted circular coordinates
     delta, mini, cocycle, edges = weighted_circular_coordinate(data, weight_ft = weight_ft_0(k=data.shape[1], alpha = alpha), return_aux = True) # weighted circular coordinates
@@ -780,7 +776,10 @@ def phase_plot(adata, genes = None, scale = 1, topk = 10, color = None, size = N
 
     else:
         # plot the entries of eigenvector 0 on the complex plane with size the modulus of the entry
-        plt.scatter(exp.values.real, exp.values.imag, s = amps*200, c = plt.cm.hsv(np.angle(exp.values) % (2*np.pi) / (2 * np.pi)), cmap = 'hsv', edgecolors = 'black', alpha = 1)
+        plt.scatter(exp.values.real, exp.values.imag, s = amps*200,
+                    c = np.angle(exp.values) % (2 * np.pi),
+                    cmap = 'hsv', vmin = 0, vmax = 2 * np.pi,
+                    edgecolors = 'black', alpha = 1)
 
 
     # label the points with the index
@@ -880,7 +879,7 @@ def plot_heatmap(
 
     # 5. Plot the heatmap
     plt.figure(figsize=figsize)
-    ax = sns.heatmap(
+    sns.heatmap(
         data_matrix,
         cmap=cmap,
         xticklabels=genes_sorted,  # gene names as column labels (or False if not shown)
@@ -936,11 +935,13 @@ def plot_top_genes(adata, k = 10):
     # set up 4 subplots stack ontop of each other
     fig, axs = plt.subplots(len(top_genes), 1, figsize=(10, len(genes)*2))
 
+    hsv_colors = colormaps.get_cmap('hsv')
+
     # plot gene expression
     for i, gene in enumerate(genes):
         gene_exp = adata[:,genes[i]].X
         # map gene_phase to a hsv color
-        color = plt.cm.hsv(gene_phases[gene] / (2 * np.pi))
+        color = hsv_colors(gene_phases[gene] / (2 * np.pi))
 
         
 
@@ -1147,10 +1148,13 @@ def scatter3D(adata, color = None, comp = [0,1,2], title = False, color_continuo
     if mode == 'pca':
         if 'X_pca' not in adata.obsm.keys():
             raise ValueError('PCA not computed')
-
+        data = adata.obsm['X_pca'][:,comp]
     elif mode == 'ef':
         if 'X_ef' not in adata.obsm.keys():
             raise ValueError('Effective Resistance not computed')
+        data = adata.obsm['X_ef'][:,comp]
+    else:
+        raise ValueError("mode must be either 'pca' or 'ef'")
     
     # check color is in adata.obs
     if color is not None:
@@ -1158,12 +1162,6 @@ def scatter3D(adata, color = None, comp = [0,1,2], title = False, color_continuo
         if color not in adata.var_names:
             if color not in adata.obs.columns:
                 raise ValueError('color not in adata.obs or adata.var_names, please select one of the following: ' + str(adata.obs.columns))
-
-    # load the best pca projection
-    if mode == 'pca':
-        data = adata.obsm['X_pca'][:,comp]
-    elif mode == 'ef':
-        data = adata.obsm['X_ef'][:,comp]
 
     # make a dataframe of the data and phases
     dummy_df = pd.DataFrame(data)
@@ -1332,7 +1330,7 @@ def circ_enrich(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2, m
     pbar = tqdm(gs_collection.items(), total=len(gs_collection))
 
     if min_genes is None:
-        min_genes = k +1
+        min_genes = k + 1
 
     for gs_name, gs in pbar:
         sub_gs_genes = adata.var_names.intersection(gs)
@@ -1348,8 +1346,10 @@ def circ_enrich(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2, m
         pdgm_pca.index = [gs_name]
         pdgm_ls.append(pdgm_pca)
 
-    if len(pdgm_ls) != 0:
-        df = pd.concat(pdgm_ls)
+    if len(pdgm_ls) == 0:
+        raise ValueError()
+
+    df = pd.concat(pdgm_ls)
 
     data_dict = {}
     for gs_name, row in df.iterrows():
@@ -1485,8 +1485,10 @@ def circ_enrich_ef(adata, gs_collection, comp = [0,1,2],  k = None, exponent = 2
         pdgm_pca.index = [gs_name]
         pdgm_ls.append(pdgm_pca)
 
-    if len(pdgm_ls) != 0:
-        df = pd.concat(pdgm_ls)
+    if len(pdgm_ls) == 0:
+        raise ValueError()
+
+    df = pd.concat(pdgm_ls)
 
     data_dict = {}
     for gs_name, row in df.iterrows():
@@ -1552,8 +1554,10 @@ def circ_enrich_density(adata, gs_collection, comp = [0,1,2],  k = None, exponen
         pdgm_pca.index = [gs_name]
         pdgm_ls.append(pdgm_pca)
 
-    if len(pdgm_ls) != 0:
-        df = pd.concat(pdgm_ls)
+    if len(pdgm_ls) == 0:
+        raise ValueError()
+
+    df = pd.concat(pdgm_ls)
 
     data_dict = {}
     for gs_name, row in df.iterrows():
