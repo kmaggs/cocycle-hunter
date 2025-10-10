@@ -19,13 +19,12 @@ from ripser import ripser
 from tqdm import tqdm
 
 
-
-
-### --- WEIGHTED CIRCULAR COORDINATES (Modified version from Paik et al. 2023) ---
-
-
 def weighted_circular_coordinate(data, distance_matrix=False, ripser_result=False, prime=3, cocycle_n=None, eps=None,
                                  weight_ft: callable = None, return_aux=False):
+    """
+    Compute weighted circular coordinates from data using persistent cohomology.
+    (Modified version from Paik et al. 2023)
+    """
     if not ripser_result:
         ripser_result = ripser(data, distance_matrix=distance_matrix, coeff=prime, do_cocycles=True)
     else:
