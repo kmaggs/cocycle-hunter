@@ -22,3 +22,5 @@ Data/*
 examples/Synthetic/Transcriptomic-switch-model.ipynb
 *.egg-info/
 
+# Data files that are too large to be stored in the repository
+/examples/Capolupo/data/capolupo_fibroblasts_cycling.h5ad
