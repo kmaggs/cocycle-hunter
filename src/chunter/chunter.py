@@ -12,8 +12,6 @@ import scipy.sparse as sp
 import scipy.stats as ss
 import seaborn as sns
 from ripser import ripser
-from scipy import sparse
-from scipy.sparse import csr_matrix, diags, identity, issparse
 from scipy.sparse.linalg import eigsh
 from scipy.spatial import distance
 from scipy.spatial.distance import cdist
@@ -53,22 +51,22 @@ def weighted_circular_coordinate(data, distance_matrix=False, ripser_result=Fals
     J = edges.flatten()
     V = np.c_[-1 * np.ones(n_edges), np.ones(n_edges)]
     V = V.flatten()
-    delta = sparse.coo_matrix((V, (I, J)), shape=(n_edges, n_vert))
+    delta = sp.coo_matrix((V, (I, J)), shape=(n_edges, n_vert))
 
     # Cocycle
     cocycle = ripser_result["cocycles"][1][cocycle_n]
     val = cocycle[:, 2]
     val[val > (prime - 1) / 2] -= prime
-    Y = sparse.coo_matrix((val, (cocycle[:, 0], cocycle[:, 1])), shape=(n_vert, n_vert))
+    Y = sp.coo_matrix((val, (cocycle[:, 0], cocycle[:, 1])), shape=(n_vert, n_vert))
     Y = Y - Y.T
     cocycle = np.asarray(Y[edges[:, 0], edges[:, 1]])[0]
 
     # Minimize
     if weight_ft is None:
-        mini = sparse.linalg.lsqr(delta, cocycle)[0]
+        mini = sp.linalg.lsqr(delta, cocycle)[0]
     else:
         new_delta, new_cocycle = weight_ft(delta, cocycle, dist_mat, edges)
-        mini = sparse.linalg.lsqr(new_delta, new_cocycle)[0]
+        mini = sp.linalg.lsqr(new_delta, new_cocycle)[0]
 
     if return_aux:
         return new_delta, mini, new_cocycle, edges
@@ -375,7 +373,7 @@ def compute_knn_adjacency(X, num_neighbors=10):
         A (ndarray): An n x n binary adjacency matrix.
     """
     # Convert X to dense if it is sparse.
-    if issparse(X):
+    if sp.issparse(X):
         X = X.toarray()
     
     n = X.shape[0]
@@ -415,20 +413,20 @@ def compute_effective_resistance_embedding(X, num_neighbors=10, k=10):
     n = A_dense.shape[0]
     
     # Convert the dense adjacency matrix to a sparse matrix.
-    A_sparse = csr_matrix(A_dense)
+    A_sparse = sp.csr_matrix(A_dense)
     
     # Compute the degree vector: d_i = sum_j A[i,j]
     d = np.array(A_sparse.sum(axis=1)).ravel()
     d_inv_sqrt = 1.0 / np.sqrt(d)
     
     # Create the diagonal matrix D^(-1/2)
-    D_inv_sqrt = diags(d_inv_sqrt)
+    D_inv_sqrt = sp.diags(d_inv_sqrt)
     
     # Compute the symmetrically normalized adjacency matrix: A_sym = D^(-1/2) * A * D^(-1/2)
     A_sym_sparse = D_inv_sqrt @ A_sparse @ D_inv_sqrt
     
     # Compute the normalized Laplacian: L_sym = I - A_sym
-    L_sym_sparse = identity(n) - A_sym_sparse
+    L_sym_sparse = sp.identity(n) - A_sym_sparse
     
     # Compute the first k+1 smallest eigenpairs (k+1 because the smallest eigenpair is trivial)
     eigenvals, eigenvecs = eigsh(L_sym_sparse, k=k+1, which='SM')
