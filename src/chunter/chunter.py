@@ -11,6 +11,7 @@ import scanpy as sc
 import scipy.sparse as sp
 import scipy.stats as ss
 import seaborn as sns
+import warnings
 from ripser import ripser
 from scipy.sparse.linalg import eigsh
 from scipy.spatial import distance
@@ -1276,7 +1277,19 @@ def PCA_persistence_info(adata, pca_combos, mode="pca"):
 
 # turn the above 3 cells into a single function with inputs adata, gs_collection, random state
 # and outputs the df
-def circ_enrich(adata, gs_collection, comp=[0, 1, 2], k=None, exponent=2, min_genes=None):
+def circ_enrich(
+    adata,
+    gs_collection,
+    comp=[0, 1, 2],
+    k=None,
+    exponent=2,
+    min_genes=None,
+    bandwidth=None,
+    lower_percentile=None,
+    upper_percentile=None,
+    mode="pca",
+    n_neighbors=5,
+):
     if k is not None:
         comp = list(range(k))
     else:
@@ -1295,9 +1308,26 @@ def circ_enrich(adata, gs_collection, comp=[0, 1, 2], k=None, exponent=2, min_ge
         if sub_adata.n_vars < min_genes:
             continue
 
-        sc.tl.pca(sub_adata, n_comps=k)
-        diameter = max(distance.pdist(sub_adata.obsm["X_pca"]))
-        pdgm_pca = PCA_persistence_info(sub_adata, [comp])
+        if mode == "pca":
+            sc.tl.pca(sub_adata, n_comps=k)
+
+            if bandwidth is not None:
+                sub_adata = filter_cells_by_density(
+                    sub_adata,
+                    n_pcs=k,
+                    bandwidth=bandwidth,
+                    lower_percentile=lower_percentile,
+                    upper_percentile=upper_percentile,
+                )
+
+            diameter = max(distance.pdist(sub_adata.obsm["X_pca"]))
+        elif mode == "ef":
+            effective_resistence(sub_adata, num_neighbors=n_neighbors, k=k)
+            diameter = max(distance.pdist(sub_adata.obsm["X_ef"]))
+        else:
+            raise ValueError()
+
+        pdgm_pca = PCA_persistence_info(sub_adata, [comp], mode=mode)
         pdgm_pca["diameter"] = diameter
         pdgm_pca.index = [gs_name]
         pdgm_ls.append(pdgm_pca)
@@ -1416,71 +1446,24 @@ def filter_cells_by_density_iterative(
     return adata
 
 
-# turn the above 3 cells into a single function with inputs adata, gs_collection, random state
-# and outputs the df
 def circ_enrich_ef(adata, gs_collection, comp=[0, 1, 2], k=None, exponent=2, min_genes=None, n_neighbors=5):
-    if k is not None:
-        comp = list(range(k))
-    else:
-        k = max(comp) + 1
-
-    pdgm_ls = []
-    pbar = tqdm(gs_collection.items(), total=len(gs_collection))
-
-    if min_genes is None:
-        min_genes = k + 1
-
-    for gs_name, gs in pbar:
-        sub_gs_genes = adata.var_names.intersection(gs)
-        sub_adata = adata[:, sub_gs_genes].copy()
-
-        if sub_adata.n_vars < min_genes:
-            continue
-
-        effective_resistence(sub_adata, num_neighbors=n_neighbors, k=k)
-
-        diameter = max(distance.pdist(sub_adata.obsm["X_ef"]))
-        pdgm_pca = PCA_persistence_info(sub_adata, [comp], mode="ef")
-        pdgm_pca["diameter"] = diameter
-        pdgm_pca.index = [gs_name]
-        pdgm_ls.append(pdgm_pca)
-
-    if len(pdgm_ls) == 0:
-        raise ValueError()
-
-    df = pd.concat(pdgm_ls)
-
-    data_dict = {}
-    for gs_name, row in df.iterrows():
-        pdgm = rng.PDiagram(row.pdgm, diameter=row.diameter, dim=1)
-        data_dict[gs_name] = [
-            rng.ring_score_from_pdiagram(pdgm, score_type="length", exponent=exponent),
-            rng.ring_score_from_pdiagram(pdgm, score_type="diameter", exponent=exponent),
-            rng.ring_score_from_pdiagram(pdgm, score_type="ratio", exponent=exponent),
-            rng.ringscore.statistics.min_pvalue_from_pdiagram(pdgm),
-            rng.ringscore.statistics.min_pvalue_from_pdiagram(
-                pdgm,
-                remove_top_n=0,
-            ),
-        ]
-
-    col_names = [
-        "score_length",
-        "score_diameter",
-        "score_ratio",
-        "min_pvalue",
-        "min_pvalue_no_top",
-    ]
-
-    ring_score_df = pd.DataFrame(data_dict, index=col_names).T
-
-    df = df.merge(ring_score_df, left_index=True, right_index=True)
-
-    return df
+    warnings.warn(
+        'circ_enrich_ef is deprecated. Use `circ_enrich` with `mode="ef"` instead.',
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return circ_enrich(
+        adata=adata,
+        gs_collection=gs_collection,
+        comp=comp,
+        k=k,
+        exponent=exponent,
+        min_genes=min_genes,
+        mode="ef",
+        n_neighbors=n_neighbors,
+    )
 
 
-# turn the above 3 cells into a single function with inputs adata, gs_collection, random state
-# and outputs the df
 def circ_enrich_density(
     adata,
     gs_collection,
@@ -1492,72 +1475,22 @@ def circ_enrich_density(
     upper_percentile=100,
     min_genes=None,
 ):
-    if k is not None:
-        comp = list(range(k))
-    else:
-        k = max(comp) + 1
-
-    pdgm_ls = []
-    pbar = tqdm(gs_collection.items(), total=len(gs_collection))
-
-    if min_genes is None:
-        min_genes = k + 1
-
-    for gs_name, gs in pbar:
-        sub_gs_genes = adata.var_names.intersection(gs)
-        sub_adata = adata[:, sub_gs_genes].copy()
-
-        if sub_adata.n_vars < min_genes:
-            continue
-
-        sc.tl.pca(sub_adata, n_comps=k)
-
-        sub_adata = filter_cells_by_density(
-            sub_adata,
-            n_pcs=k,
-            bandwidth=bandwidth,
-            lower_percentile=lower_percentile,
-            upper_percentile=upper_percentile,
-        )
-
-        diameter = max(distance.pdist(sub_adata.obsm["X_pca"]))
-        pdgm_pca = PCA_persistence_info(sub_adata, [comp])
-        pdgm_pca["diameter"] = diameter
-        pdgm_pca.index = [gs_name]
-        pdgm_ls.append(pdgm_pca)
-
-    if len(pdgm_ls) == 0:
-        raise ValueError()
-
-    df = pd.concat(pdgm_ls)
-
-    data_dict = {}
-    for gs_name, row in df.iterrows():
-        pdgm = rng.PDiagram(row.pdgm, diameter=row.diameter, dim=1)
-        data_dict[gs_name] = [
-            rng.ring_score_from_pdiagram(pdgm, score_type="length", exponent=exponent),
-            rng.ring_score_from_pdiagram(pdgm, score_type="diameter", exponent=exponent),
-            rng.ring_score_from_pdiagram(pdgm, score_type="ratio", exponent=exponent),
-            rng.ringscore.statistics.min_pvalue_from_pdiagram(pdgm),
-            rng.ringscore.statistics.min_pvalue_from_pdiagram(
-                pdgm,
-                remove_top_n=0,
-            ),
-        ]
-
-    col_names = [
-        "score_length",
-        "score_diameter",
-        "score_ratio",
-        "min_pvalue",
-        "min_pvalue_no_top",
-    ]
-
-    ring_score_df = pd.DataFrame(data_dict, index=col_names).T
-
-    df = df.merge(ring_score_df, left_index=True, right_index=True)
-
-    return df
+    warnings.warn(
+        "circ_enrich_density is deprecated. Use `circ_enrich` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return circ_enrich(
+        adata=adata,
+        gs_collection=gs_collection,
+        comp=comp,
+        k=k,
+        exponent=exponent,
+        min_genes=min_genes,
+        bandwidth=bandwidth,
+        lower_percentile=lower_percentile,
+        upper_percentile=upper_percentile,
+    )
 
 
 def ring_score(adata, score_type="ratio", exponent=2, comp=np.arange(5), recompute=False):
