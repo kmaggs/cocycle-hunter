@@ -35,4 +35,6 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/chunter"]
 
+[tool.ruff]
+line-length = 120
 
