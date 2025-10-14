@@ -1082,7 +1082,7 @@ def plot_2d(adata, c, mode="ll", comp=None, scale=1):
             raise ValueError("PCA not computed")
 
     # intialize the figure with len(c) subplots, and a size which is a function of len(c)
-    fig, ax = plt.subplots(1, len(c), figsize=(scale * 8 * (len(c)), scale * 6))
+    _, ax = plt.subplots(1, len(c), figsize=(scale * 8 * (len(c)), scale * 6))
 
     a = len(c)
 
@@ -1624,7 +1624,7 @@ def permutation_pvalue(
 
     pvalue = calculate_pvalue_from_empirical_scores2(test_score, empirical_scores)
 
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
 
     ax.hist(empirical_scores, bins=20, alpha=0.5, label="empirical")
     ax.axvline(test_score, color="r", label="test")
@@ -1654,7 +1654,7 @@ def plot_diagram(adata, comp=[0, 1, 2]):
     idx = np.argmax(pdgm[:, 1] - pdgm[:, 0])
     max_birth, max_death = pdgm[idx]
 
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     rng.PDiagram(pdgm).plot(ax=ax)
     ax.scatter(max_birth, max_death, 75, "k", "x")
     ax.set_title(f"Max 1D birth = {max_birth:.2f}, death = {max_death:.2f}")
