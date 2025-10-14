@@ -1,4 +1,5 @@
 import random
+import warnings
 
 import anndata
 import matplotlib.cm as colormaps
@@ -11,7 +12,6 @@ import scanpy as sc
 import scipy.sparse as sp
 import scipy.stats as ss
 import seaborn as sns
-import warnings
 from ripser import ripser
 from scipy.sparse.linalg import eigsh
 from scipy.spatial import distance
@@ -402,7 +402,8 @@ def compute_effective_resistance_embedding(X, num_neighbors=10, k=10):
       1. Constructs the binary symmetric kNN adjacency matrix.
       2. Computes its degree vector and forms the symmetrically normalized Laplacian.
       3. Computes the first k+1 smallest eigenpairs (discarding the trivial eigenpair).
-      4. Constructs the embedding using the scaling factors (scale = (1 - mu) / sqrt(mu)) and normalizing by 1/sqrt(degree).
+      4. Constructs the embedding using the scaling factors (scale = (1 - mu) / sqrt(mu)) and
+         normalizing by 1/sqrt(degree).
 
     Parameters:
         X (ndarray or sparse matrix): An n x d point cloud.
@@ -449,7 +450,8 @@ def compute_effective_resistance_embedding(X, num_neighbors=10, k=10):
     scale = (1 - mu_nontriv) / np.sqrt(mu_nontriv)
 
     # Construct the effective resistance embedding:
-    # For each node i, its embedding is  e_eff[i] = (1/sqrt(d_i)) * [scale[0]*U_nontriv[i, 0], …, scale[k-1]*U_nontriv[i, k-1]]
+    # For each node i, its embedding is
+    #   e_eff[i] = (1/sqrt(d_i)) * [scale[0]*U_nontriv[i, 0], …, scale[k-1]*U_nontriv[i, k-1]]
     e_eff = d_inv_sqrt[:, None] * (U_nontriv * scale[None, :])
     return e_eff
 
@@ -750,7 +752,7 @@ def phase_plot(adata, genes=None, scale=1, topk=10, color=None, size=None):
 
     if color is not None:
         # check the type of elements in subset.var[color]
-        if type(subset.var[color][0]) == str:
+        if isinstance(subset.var[color][0], str):
             print("O")
             for t in subset.var[color].unique():
                 # find indices of genes in group t
@@ -811,7 +813,7 @@ def phase_plot(adata, genes=None, scale=1, topk=10, color=None, size=None):
     plt.legend(loc="upper right")
 
     if color is not None:
-        if type(subset.var[color][0]) != str:
+        if not isinstance(subset.var[color][0], str):
             plt.colorbar(label=color)
 
     plt.show()
@@ -1212,7 +1214,8 @@ def pdgm_to_pNorm(pdgm):
 # rewrite the code in the box above as a function with input adata and combos
 def PCA_persistence_info(adata, pca_combos, mode="pca"):
     """
-    A function to calculate the persistence diagram and assosicated statistics for each combo in combos and store them in a list
+    A function to calculate the persistence diagram and assosicated statistics
+    for each combo in combos and store them in a list
     ----------
 
     Parameters:
@@ -1224,8 +1227,10 @@ def PCA_persistence_info(adata, pca_combos, mode="pca"):
             combo (list): a list of integers, each integer is a PCA index
             min_adj_pvals (float): the minimum adjusted p-value for the persistence diagram
             minpvals (float): the minimum p-value for the persistence diagram
-            ksLGumbel (float): the Kolmogorov-Smirnov statistic for the persistence diagram under the L-transformed LGumbel distribution
-            ksNormal (float): the Kolmogorov-Smirnov statistic for the persistence diagram under the L-transformed Normal distribution
+            ksLGumbel (float): the Kolmogorov-Smirnov statistic for the persistence diagram
+                               under the L-transformed LGumbel distribution
+            ksNormal (float): the Kolmogorov-Smirnov statistic for the persistence diagram
+                              under the L-transformed Normal distribution
             adj_pvals (list): a list of adjusted p-values for each point in the persistence diagram
             pvals (list): a list of p-values for each point in the persistence diagram
             pdgm (list): a list of lists, each list is a point in the persistence diagram
@@ -1505,10 +1510,9 @@ def calculate_pvalue_from_empirical_scores(test_score, empirical_scores):
     return ecdf.sf.evaluate(test_score)
 
 
-from statsmodels.distributions.empirical_distribution import ECDF
-
-
 def calculate_pvalue_from_empirical_scores2(test_score, empirical_scores):
+    from statsmodels.distributions.empirical_distribution import ECDF
+
     ecdf = ECDF(empirical_scores)
     return 1 - ecdf(test_score)
 
