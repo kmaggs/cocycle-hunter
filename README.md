@@ -117,6 +117,6 @@ There are many ways to set up Python and run Jupyter notebooks. Choose the optio
    - [VSCode](https://code.visualstudio.com/download) or 
    - [PyCharm](https://www.jetbrains.com/pycharm/)
 
-6. *Open the folder in your IDE*  
-   Launch then example notebook and run cells with `Shift + Enter`.
+6. *Run the Example Notebook in your IDE*  
+   Launch your IDE - VSCode or PyCharm. In the main menu click "File > Open Folder..." and the select the "testing-chunter" folder. Now, in the left sidebar, click on "Capolupo-cell-cycle.ipynb". This will open the example notebook. Click right below the title "Cell cocycle analysis in Capolupo ..." and press `Shift + Enter`. A popup window should appear and ask you to select a kernel. Click on "Python Environments..." and afterwards click on "testing-chunter .venv/bin/python". Not everything is setup. And you can press `Shift + Enter` to execute the example notebook step by step.
 </details>
