@@ -32,11 +32,12 @@ Finally if you would like a powerful IDE that lets you work efficiently with jup
     ```sh
     curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
+  (Or have a look at the [UV webpage](https://docs.astral.sh/uv/getting-started/installation/).)
     
 2. Create an empty folder "testing-chunter"
-3. Download  into your "testing-chunter" folder. Follow [this link](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) and then click:
+3. Download the [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your "testing-chunter" folder. 
    
-   TODO
+   Right-click this [link](https://raw.githubusercontent.com/kmaggs/cocycle-hunter/refs/heads/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) and select "Save Link as...".
    
 4. In the terminal run
     ```sh
@@ -44,7 +45,7 @@ Finally if you would like a powerful IDE that lets you work efficiently with jup
     uv init
     uv add chunter
     uv add notebook
-    uv run jupyter notebook
+    uv run jupyter notebook # This opens jupyter notebooks in your browser.
     ```
 5. The last command should open a new tab in your Browser. Click on `Capolupo-cell-cyclte.ipynb`, to open the notebook. Click `Shift + Enter` many times to execute the notebook step by step.
 
@@ -59,12 +60,12 @@ Finally if you would like a powerful IDE that lets you work efficiently with jup
     conda create -n cocycle-hunter-env python=3.10 notebook
     conda activate cocycle-hunter-env
     pip install chunter
-    jupyter notebook
+    jupyter notebook # This opens jupyter notebooks in your browser.
     ```
 
 ### Option 3: Run Cocyclte Hunter using UV + VSCode / PyCharm
 
-1. Install UV (see [webpage](https://docs.astral.sh/uv/getting-started/installation/))
+1. Install UV
    - On Windows, open PowerShell and execute:
      ```shell   
      powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"   
@@ -73,8 +74,9 @@ Finally if you would like a powerful IDE that lets you work efficiently with jup
      ```sh   
      curl -LsSf https://astral.sh/uv/install.sh | sh   
      ```   
+   (Or have a look at the [UV webpage](https://docs.astral.sh/uv/getting-started/installation/).)
 2. Create an empty folder "testing-chunter"
-3. Download [example notebook]((https://github.com/kmaggs/cocycle-hunter/blob/main/examples/capolupo/capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
+3. Download [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/capolupo/capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
 4. In the terminal run
 
     ```sh
