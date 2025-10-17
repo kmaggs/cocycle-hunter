@@ -24,44 +24,66 @@ Finally if you would like a powerful IDE that lets you work efficiently with jup
 ### Option 1: Run Cocycle Hunter using UV and Jupyter notebooks
 
 1. Install UV as described on the UV web page.
-  - On Windows, open PowerShell and execute:
-  - On Mac
-  - On Linux, in the terminal run: ``
+  - On Windows, open PowerShell and execute: 
+    ```shell
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    ```
+  - On MacOS and Linux, in the terminal run: ``
+    ```sh
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    ```
+    
 2. Create an empty folder "testing-chunter"
-3. Download example notebook into your "testing-chunter" folder.
+3. Download  into your "testing-chunter" folder. Follow [this link](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) and then click:
+   
+   TODO
+   
 4. In the terminal run
-```sh
-uv init
-uv add chunter
-uv add jupyternotebook
-uv run jupyter notebook
-```
-5. The last command should open a new tab in your Browser. This is were you can execute our example notebook. On the left side click on `Capolupo-cell-cyclte.ipynb`.
+    ```sh
+    cd testing-chunter
+    uv init
+    uv add chunter
+    uv add notebook
+    uv run jupyter notebook
+    ```
+5. The last command should open a new tab in your Browser. Click on `Capolupo-cell-cyclte.ipynb`, to open the notebook. Click `Shift + Enter` many times to execute the notebook step by step.
 
 ### Option 2: Run Cocycle Hunter using Conda and Jupyter notebooks
 
-1. We assume that conda is already installed on your computer. If note we recommend using miniforge, please go to the [Miniforge webpage] for an installation Guide.
+1. We assume that conda is already installed on your computer. If not, we recommend using Miniforge, please go to the [Miniforge webpage](https://github.com/conda-forge/miniforge#install) for an installation guide.
 2. Create an empty folder "testing-chunter"
-3. Download example notebook into your "testing-chunter" folder.
+3. Download [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
 4. In the terminal run
-```sh
-conda create -n cocycle-hunter-env python=3.10 jupyter-notebook
-conda activate cocycle-hunter-env
-pip install chunter
-jupyter-notebook
-```
+    ```sh
+    cd testing-chunter
+    conda create -n cocycle-hunter-env python=3.10 notebook
+    conda activate cocycle-hunter-env
+    pip install chunter
+    jupyter notebook
+    ```
 
-### Run Cocyclte Hunter using UV + VSCode / PyCharme
+### Option 3: Run Cocyclte Hunter using UV + VSCode / PyCharm
 
-1. Install UV
-2. Create an empty folder
-3. Download example notebook into your "testing-chunter" folder.
+1. Install UV (see [webpage](https://docs.astral.sh/uv/getting-started/installation/))
+   - On Windows, open PowerShell and execute:
+     ```shell   
+     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"   
+     ```   
+   - On MacOS and Linux, in the terminal run: ``   
+     ```sh   
+     curl -LsSf https://astral.sh/uv/install.sh | sh   
+     ```   
+2. Create an empty folder "testing-chunter"
+3. Download [example notebook]((https://github.com/kmaggs/cocycle-hunter/blob/main/examples/capolupo/capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
 4. In the terminal run
-```sh
-uv init
-uv add chunter
-uv add ipykernel
-```
-5. Install VSCode or PyCharme
+
+    ```sh
+    cd testing-chunter
+    uv init
+    uv add chunter
+    uv add ipykernel
+    ```
+
+5. Install [VSCode](https://code.visualstudio.com/download) or [PyCharm](https://www.jetbrains.com/pycharm/)
 6. Start VSCode / PyCharm and open the folder "testing-chunter"
-7. Click on `Capolupo-cell-cycle.ipynb`, press Strg+Enter to execute the first cell. You will be asked for the jupyter kernel to use, select '.venv/bin/python'
+7. Click on `Capolupo-cell-cycle.ipynb`, press `Shift + Enter` many times to execute the notebook step by step.
