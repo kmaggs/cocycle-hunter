@@ -1,91 +1,114 @@
 # Cocycle Hunter
 
-Python package for hunting for cocycles in single-cell RNA-seq data.
+A Python package for identifying cocycles in single-cell RNA-seq data.
 
-## Getting Started
+**Author**: Kelly Maggs
 
-Using Cocycle Hunter is just as easy as any other python package:
-1. Install Chunter via pip:
-    ```sh
-    pip install chunter
-    ```
-2. Run our example notebook:
+**License**: [BSD 3-Clause License](LICENSE)
 
-   [Capolupo-cell-cycle.ipynb](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb). 
+## 🚀 Quick Start
 
-For people that are new to python and jupyter notebooks. Below are some more detailed step by step instruction.
+Getting started with Cocycle Hunter is simple:
 
-## Step-by-Step Instructions
+1. Install the package:
+   ```sh
+   pip install chunter
+   ```
+2. Run the example notebook:  
+   [Capolupo-cell-cycle.ipynb](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb)
 
-There are countless ways to setup python and to work with jupyter notebooks. The first option below, might be the simples way run our example notebook on your computer.
-If you often work with Conda, option 2 is for you. But we would recommend you trying UV as package manager. It is faster, easier, reliable and less error prone than conda.
-Finally if you would like a powerful IDE that lets you work efficiently with jupyter notebooks that try option 3. 
+If you're new to Python or Jupyter notebooks, don't worry—we've got detailed step-by-step instructions below.
 
-### Option 1: Run Cocycle Hunter using UV and Jupyter notebooks
+---
 
-1. Install UV as described on the UV web page.
-  - On Windows, open PowerShell and execute: 
-    ```shell
-    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    ```
-  - On MacOS and Linux, in the terminal run: ``
-    ```sh
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    ```
-  (Or have a look at the [UV webpage](https://docs.astral.sh/uv/getting-started/installation/).)
-    
-2. Create an empty folder "testing-chunter"
-3. Download the [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your "testing-chunter" folder. 
-   
-   Right-click this [link](https://raw.githubusercontent.com/kmaggs/cocycle-hunter/refs/heads/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) and select "Save Link as...".
-   
-4. In the terminal run
-    ```sh
-    cd testing-chunter
-    uv init
-    uv add chunter
-    uv add notebook
-    uv run jupyter notebook # This opens jupyter notebooks in your browser.
-    ```
-5. The last command should open a new tab in your Browser. Click on `Capolupo-cell-cyclte.ipynb`, to open the notebook. Click `Shift + Enter` many times to execute the notebook step by step.
+## Step-by-Step Setup Guide
 
-### Option 2: Run Cocycle Hunter using Conda and Jupyter notebooks
+There are many ways to set up Python and run Jupyter notebooks. Choose the option that best fits your workflow:
 
-1. We assume that conda is already installed on your computer. If not, we recommend using Miniforge, please go to the [Miniforge webpage](https://github.com/conda-forge/miniforge#install) for an installation guide.
-2. Create an empty folder "testing-chunter"
-3. Download [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
-4. In the terminal run
-    ```sh
-    cd testing-chunter
-    conda create -n cocycle-hunter-env python=3.10 notebook
-    conda activate cocycle-hunter-env
-    pip install chunter
-    jupyter notebook # This opens jupyter notebooks in your browser.
-    ```
+- **Option 1**: Use [UV](https://docs.astral.sh/uv/) for a fast, minimal setup.
+- **Option 2**: Use Conda if you're already familiar with it.
+- **Option 3**: Use UV with an IDE like VSCode or PyCharm for a more powerful experience.
 
-### Option 3: Run Cocyclte Hunter using UV + VSCode / PyCharm
+### Option 1: UV + Jupyter Notebooks (Recommended)
 
-1. Install UV
-   - On Windows, open PowerShell and execute:
-     ```shell   
-     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"   
-     ```   
-   - On MacOS and Linux, in the terminal run: ``   
-     ```sh   
-     curl -LsSf https://astral.sh/uv/install.sh | sh   
-     ```   
-   (Or have a look at the [UV webpage](https://docs.astral.sh/uv/getting-started/installation/).)
-2. Create an empty folder "testing-chunter"
-3. Download [example notebook](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/capolupo/capolupo-cell-cycle.ipynb) into your "testing-chunter" folder.
-4. In the terminal run
+1. **Install [UV](https://docs.astral.sh/uv/getting-started/installation/)**  
+   - **Windows**:
+     ```powershell
+     powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+     ```
+   - **macOS/Linux**:
+     ```sh
+     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```
 
-    ```sh
-    cd testing-chunter
-    uv init
-    uv add chunter
-    uv add ipykernel
-    ```
+2. **Create a working folder**:
+   ```sh
+   mkdir testing-chunter
+   cd testing-chunter
+   ```
 
-5. Install [VSCode](https://code.visualstudio.com/download) or [PyCharm](https://www.jetbrains.com/pycharm/)
-6. Start VSCode / PyCharm and open the folder "testing-chunter"
-7. Click on `Capolupo-cell-cycle.ipynb`, press `Shift + Enter` many times to execute the notebook step by step.
+3. **Download the example notebook**  
+   Right-click [this link](https://raw.githubusercontent.com/kmaggs/cocycle-hunter/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) and choose “Save Link As…” into your folder.
+
+4. **Install dependencies and launch Jupyter**:
+   ```sh
+   uv init
+   uv add chunter
+   uv add notebook
+   uv run jupyter notebook # This will open the jupyter notebook interface in your browser.
+   ```
+
+5. **Run the notebook**  
+   In your browser, open `Capolupo-cell-cycle.ipynb` and press `Shift + Enter` to step through the code.
+
+### Option 2: Conda + Jupyter Notebooks
+
+1. **Install Conda**  
+   If you don’t have it yet, we recommend [Miniforge](https://github.com/conda-forge/miniforge#install).
+
+2. **Create a working folder**:
+   ```sh
+   mkdir testing-chunter
+   cd testing-chunter
+   ```
+
+3. **Download the example notebook**  
+   Save [Capolupo-cell-cycle.ipynb](https://raw.githubusercontent.com/kmaggs/cocycle-hunter/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your folder.
+
+4. **Create and activate environment**:
+   ```sh
+   conda create -n cocycle-hunter-env python=3.10 notebook
+   conda activate cocycle-hunter-env
+   pip install chunter
+   jupyter notebook # This will open the jupyter notebook interface in your browser.
+   ```
+
+5. **Run the notebook**  
+   Open `Capolupo-cell-cycle.ipynb` in your browser and execute cells with `Shift + Enter`.
+
+### Option 3: UV + VSCode or PyCharm
+
+1. **Install UV** (see Option 1)
+
+2. **Create a working folder**:
+   ```sh
+   mkdir testing-chunter
+   cd testing-chunter
+   ```
+
+3. **Download the notebook**  
+   Save [Capolupo-cell-cycle.ipynb](https://raw.githubusercontent.com/kmaggs/cocycle-hunter/main/examples/Capolupo/Capolupo-cell-cycle.ipynb) into your folder.
+
+4. **Install dependencies**:
+   ```sh
+   uv init
+   uv add chunter
+   uv add ipykernel
+   ```
+
+5. **Install an IDE**  
+   - [VSCode](https://code.visualstudio.com/download)  
+   - [PyCharm](https://www.jetbrains.com/pycharm/)
+
+6. **Open the folder in your IDE**  
+   Launch the notebook and run cells with `Shift + Enter`.
