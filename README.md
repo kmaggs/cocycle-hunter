@@ -1,3 +1,5 @@
+[![](https://github.com/kmaggs/cocycle-hunter/actions/workflows/run_tests.yaml/badge.svg)](https://github.com/kmaggs/cocycle-hunter/actions/workflows/run_tests.yaml)
+
 # Cocycle Hunter
 
 A Python package for identifying cocycles in single-cell RNA-seq data.
@@ -18,8 +20,6 @@ Getting started with Cocycle Hunter is simple:
    [Capolupo-cell-cycle.ipynb](https://github.com/kmaggs/cocycle-hunter/blob/main/examples/Capolupo/Capolupo-cell-cycle.ipynb)
 
 If you're new to Python or Jupyter notebooks, don't worry—we've got detailed step-by-step instructions below.
-
----
 
 ## Step-by-Step Setup Guide
 
@@ -107,7 +107,7 @@ There are many ways to set up Python and run Jupyter notebooks. Choose the optio
    ```
 
 5. **Install an IDE**  
-   - [VSCode](https://code.visualstudio.com/download)  
+   - [VSCode](https://code.visualstudio.com/download) or 
    - [PyCharm](https://www.jetbrains.com/pycharm/)
 
 6. **Open the folder in your IDE**  
