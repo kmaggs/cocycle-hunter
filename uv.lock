@@ -206,7 +206,6 @@ dependencies = [
     { name = "ringity" },
     { name = "ripser" },
     { name = "scanpy" },
-    { name = "torch" },
 ]
 
 [package.dev-dependencies]
@@ -230,7 +229,6 @@ requires-dist = [
     { name = "ringity", specifier = ">=0.4a2" },
     { name = "ripser", specifier = ">=0.6.12" },
     { name = "scanpy", specifier = ">=1.11.1" },
-    { name = "torch", specifier = ">=2.11.0" },
 ]
 
 [package.metadata.requires-dev]
